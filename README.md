@@ -4,9 +4,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/status-beta-orange.svg)](CHANGELOG.md)
 
-Async multi-source pipeline for **League of Legends esports** — gol.gg and loltv.gg via CloakBrowser (HTML + captured XHR JSON), Leaguepedia via httpx — SQLite store with light multi-source reconcile and Parquet export.
+Async multi-source pipeline for **League of Legends esports** - gol.gg and loltv.gg via CloakBrowser (HTML + captured XHR JSON), Leaguepedia via httpx - SQLite store with light multi-source reconcile and Parquet export.
 
-**Fleet:** [vlr-scraper](https://github.com/ark-daemon/vlr-scraper) · [hltv-scraper](https://github.com/ark-daemon/hltv-scraper) · [dota2-scraper](https://github.com/ark-daemon/dota2-scraper) · [rocket-league-scraper](https://github.com/ark-daemon/rocket-league-scraper)
+**Fleet:** [vlr-scraper](https://github.com/ark-daemon/vlr-scraper) | [hltv-scraper](https://github.com/ark-daemon/hltv-scraper) | [dota2-scraper](https://github.com/ark-daemon/dota2-scraper) | [rocket-league-scraper](https://github.com/ark-daemon/rocket-league-scraper)
 
 ---
 
@@ -22,18 +22,18 @@ Maturity: **beta (`0.1.0`)**, earliest of the five fleet tools in terms of battl
 
 ```
 lol-scraper scrape {gol|loltv|leaguepedia|all}
-        │
-        â–¼
+        |
+        v
  ScrapePipeline
-   fetch workers â”€â”€â–º parse workers â”€â”€â–º store worker
-        │                  │                │
-        │                  │                â–¼
-        │                  │         Database.upsert_batch
-        │                  │         (+ Reconciler on multi-source)
-        │                  â–¼
-        │            parsers.py
-        │            (JSON payloads preferred over HTML when present)
-        â–¼
+   fetch workers --> parse workers --> store worker
+        |                  |                |
+        |                  |                v
+        |                  |         Database.upsert_batch
+        |                  |         (+ Reconciler on multi-source)
+        |                  v
+        |            parsers.py
+        |            (JSON payloads preferred over HTML when present)
+        v
   GOLFetcher / LOLTVFetcher          LeaguepediaFetcher
   CloakBrowserClient.render          httpx GET + User-Agent
   (captures xhr/fetch JSON)          region season page seeds
@@ -44,7 +44,7 @@ lol-scraper scrape {gol|loltv|leaguepedia|all}
 - **tenacity** retries on fetchers (exponential wait, 3 attempts).
 - **`rate_limit_seconds`** sleep after successful browser/HTTP fetch in the pipeline.
 - **No circuit breaker** (vlr-scraper-only term in this fleet).
-- **CloakBrowser** is the primary transport for gol.gg and loltv.gg, not Playwright alone — though CloakBrowser sits on a Chromium automation stack.
+- **CloakBrowser** is the primary transport for gol.gg and loltv.gg, not Playwright alone - though CloakBrowser sits on a Chromium automation stack.
 
 `scrape all` runs sources `gol`, `loltv`, `leaguepedia` in one pipeline invocation (shared visited-URL set).
 
@@ -62,7 +62,7 @@ source .venv/bin/activate
 
 pip install -e ".[dev]"
 # gol/loltv require CloakBrowser; first render downloads Chromium.
-# If browser launch fails, install the stealth stack’s browser deps
+# If browser launch fails, install the stealth stack's browser deps
 # (CloakBrowser/patchright), similar to other fleet repos.
 
 cp .env.example .env
@@ -97,9 +97,9 @@ lol-scraper export --out exports
 | `LOL_RATE_LIMIT_SECONDS` | `1.5` | Sleep after each fetch |
 | `LOL_REQUEST_TIMEOUT_SECONDS` | `30` | httpx timeout (Leaguepedia) |
 | `LOL_FINGERPRINT_SEED` | `42069` | CloakBrowser `--fingerprint=` |
-| `LOL_USER_AGENT` | `LoLEsportsResearchBot/0.1 (+…; contact: …)` | Research UA (not a Chrome spoof) |
+| `LOL_USER_AGENT` | `LoLEsportsResearchBot/0.1 (+...; contact: ...)` | Research UA (not a Chrome spoof) |
 
-Leaguepedia seeds expand per region into season portal paths (2020“2026 where coded in `leaguepedia_fetcher.py`).
+Leaguepedia seeds expand per region into season portal paths (2020-2026 where coded in `leaguepedia_fetcher.py`).
 
 ---
 
@@ -111,16 +111,16 @@ Tables (`storage.TABLES` / embedded `SCHEMA`):
 
 IDs are **stable string keys** (`stable_key` / text PKs), not autoincrement integers like HLTV/VLR.
 
-**Schema-shaped sample** (illustrative — local DBs may be empty until a successful scrape):
+**Schema-shaped sample** (illustrative - local DBs may be empty until a successful scrape):
 
 ```json
 // matches
-{"id": "…", "source": "loltv", "region": "LCK", "tournament": "LCK Spring",
+{"id": "...", "source": "loltv", "region": "LCK", "tournament": "LCK Spring",
  "team1": "T1", "team2": "GEN", "team1_score": 2, "team2_score": 1,
  "series_format": "Bo3", "date": "2026-01-01"}
 
 // games
-{"match_id": "…", "game_number": 1, "blue_team": "T1", "red_team": "GEN",
+{"match_id": "...", "game_number": 1, "blue_team": "T1", "red_team": "GEN",
  "winner": "T1", "patch": "16.1"}
 ```
 
@@ -138,7 +138,7 @@ Unit tests assert defensive parsing on synthetic HTML/JSON (`tests/test_parsers.
 - **Reconcile is best-effort**, not a full entity-resolution system.
 - **No circuit breaker**; only tenacity + fixed sleep.
 - **`browser_concurrency` is configured** but fetch concurrency is primarily `concurrency` on the shared queue.
-- **Legal/ToS** for third-party sites is the operator’s problem.
+- **Legal/ToS** for third-party sites is the operator's problem.
 - **Tests** are unit/smoke level; no CI live scrape.
 
 ---
@@ -147,7 +147,7 @@ Unit tests assert defensive parsing on synthetic HTML/JSON (`tests/test_parsers.
 
 | Layer | Actually used |
 |-------|----------------|
-| Runtime | Python â‰¥3.11, asyncio |
+| Runtime | Python >=3.11, asyncio |
 | CLI | typer, rich (`lol-scraper`) |
 | Config | pydantic + pydantic-settings |
 | HTTP | httpx (Leaguepedia) |
@@ -155,15 +155,15 @@ Unit tests assert defensive parsing on synthetic HTML/JSON (`tests/test_parsers.
 | HTML/JSON | beautifulsoup4 + selectolax; network JSON preferred in parsers |
 | Retry | tenacity |
 | Storage | aiosqlite |
-| Export | pandas + pyarrow → Parquet |
-| Logging | loguru; tqdm progress in pipeline |
+| Export | pandas + pyarrow -> Parquet |
+| Logging | loguru; tqdm progress in pipeline / rich CLI chrome |
 | Quality | pytest, pytest-asyncio (dev) |
 
 ---
 
 ## License
 
-MIT © ark-daemon — see [LICENSE](LICENSE).
+MIT (c) ark-daemon - see [LICENSE](LICENSE).
 
 See also [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), [CHANGELOG.md](CHANGELOG.md).
 

@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+build/
+dist/
+
+# Secrets & local config
+.env
+.env.local
+
+# Runtime artifacts
+logs/
+exports/
+exports-smoke/
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+
+# Scratch / local notes
+scratch.py
+commands.txt
+lol.md
+docs/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -34,3 +34,7 @@ docs/
 Thumbs.db
 .vscode/
 .idea/
+
+# Fleet match snapshots
+export/
+
